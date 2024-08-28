@@ -9,9 +9,14 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,11 +29,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        /*
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.et_dataInput), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        */
+
 
         // assign values to each element in layout
         btn_getCityId = findViewById(R.id.btn_getCityId);
@@ -43,7 +52,19 @@ public class MainActivity extends AppCompatActivity {
         btn_getCityId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "some text", Toast.LENGTH_SHORT );
+
+                // Instantiate the RequestQueue.
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                String url = "https://www.metaweather.com/api/location/search/?query=london";
+
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        response -> Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT ),
+                        error -> Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT ));
+
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+
             }
         });
 
