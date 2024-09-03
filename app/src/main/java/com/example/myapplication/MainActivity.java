@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,6 +23,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +80,24 @@ public class MainActivity extends AppCompatActivity {
         btn_getWeatherByCityId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                weatherDataService.getCityForecastById(et_dataInput.getText().toString(), new WeatherDataService.ForecastByIdResponse() {
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(List<WeatherReportModel> weatherReportModels) {
+                        //Toast.makeText(MainActivity.this, weatherReportModels.toString(), Toast.LENGTH_SHORT).show();
+
+
+                        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.activity_list_item, weatherReportModels);
+                        lv_weatherReports.setAdapter(arrayAdapter);
+                    }
+                });
+
+
+                /*
                 weatherDataService.getCityForecastById(et_dataInput.getText().toString(), new WeatherDataService.VolleyResponseListener() {
                     @Override
                     public void onError(String message) {
@@ -88,13 +109,30 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Returned an ID of " + cityId, Toast.LENGTH_SHORT ).show();
                     }
                 });
+                */
             }
         });
 
         btn_getWeatherByCityName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "some text" + et_dataInput.getText().toString(), Toast.LENGTH_SHORT );
+                //Toast.makeText(MainActivity.this, "some text" + et_dataInput.getText().toString(), Toast.LENGTH_SHORT );
+
+                weatherDataService.getCityForecastByName(et_dataInput.getText().toString(), new WeatherDataService.GetCityForecastByNameCallback() {
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(List<WeatherReportModel> weatherReportModels) {
+                        //Toast.makeText(MainActivity.this, weatherReportModels.toString(), Toast.LENGTH_SHORT).show();
+
+
+                        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.activity_list_item, weatherReportModels);
+                        lv_weatherReports.setAdapter(arrayAdapter);
+                    }
+                });
             }
         });
 
